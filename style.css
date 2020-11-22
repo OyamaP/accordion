@@ -1,0 +1,100 @@
+/*****************************
+/ 補正
+/*****************************/
+html {
+    font-size: 62.5%;
+}
+body {
+    font-family: europa,"Yu Gothic",YuGothic,"ヒラギノ角ゴ ProN W3","Hiragino Kaku Gothic ProN","メイリオ",Meiryo,sans-serif;
+    font-size: 2.0rem;
+    margin: 0;
+}
+
+h1,h2,h3,h4,h5,h6,p {
+    margin: 0;
+}
+
+ol, ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+/*****************************
+/ section / common
+/*****************************/
+.section {
+    margin: 30px 0;
+}
+.section__title {
+    margin-bottom: 60px;
+    font-family: fantasy;
+    font-size: 3.6rem;
+    font-weight: bold;
+    text-align: center;
+}
+.section__title span {
+    position: relative;
+}
+.section__title span::after {
+    content: "";
+    display: block;
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0.5em;
+    height: 2px;
+    background: #000;
+}
+
+
+/*****************************
+/ section / faq
+/*****************************/
+.faq .section__content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+.faq__inner {
+    padding: 30px;
+    background: rgba(194,194,208,0.4);
+}
+.faq__question {
+    display: block;
+    position: relative;
+    padding: 24px 3em;
+    font-size: 1.6rem;
+    background: #fff;
+    cursor: pointer;
+    text-indent: -1em;
+}
+.faq__question::after {
+    content: "+";
+    display: block;
+    position: absolute;
+    top: 50%;
+    right: 25px;
+    transform: translateY(-50%);
+    text-align: center;
+}
+.faq__question.open::after {
+    content: "-";
+}
+.faq__answer p {
+    padding: 24px 3em;
+    font-size: 1.6rem;
+    color: #fff;
+    text-indent: -1em;
+    background: rgba(37,117,252,0.8);
+}
+
+
+
+
+
+
+
+
+
+

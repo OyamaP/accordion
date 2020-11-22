@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <title>Accordion Menu</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+    <section class="section faq">
+        <h1 class="section__title" id="FAQ"><span>FAQ</span></h1>
+        <div class="section__content">
+            <div class="faq__inner">
+                <ul class="faq__item">
+                    <li class="faq__list">
+                        <div class="faq__question">
+                            <p>Q.What is this?</p>
+                        </div>
+                        <div class="faq__answer">
+                            <p>A.Set the accordion menu.</p>
+                        </div>
+                    </li>
+                    <li class="faq__list">
+                        <div class="faq__question">
+                            <p>Q.What is the programming language used in this tool?</p>
+                        </div>
+                        <div class="faq__answer">
+                            <p>
+                                A.This tool uses JavaScript.<br>
+                                Native JS without jQuery.
+                            </p>
+                        </div>
+                    </li>
+                    <li class="faq__list">
+                        <div class="faq__question">
+                            <p>Q.Why did you decide to make it?</p>
+                        </div>
+                        <div class="faq__answer">
+                            <p>
+                                A.Because…<br>
+                                CSS(checkbox): The height of the menu is fixed.<br>
+                                jQuery: There are requirements that cannot be used.
+                            </p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+    <script src="accordion.js"></script>
+    <script>
+        const accordion = new SetAccordion('.faq__question',{
+            only: true,
+            first: true,
+        });
+    </script>
+</body>
+
+</html>
