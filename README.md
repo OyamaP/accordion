@@ -15,19 +15,16 @@
 
 1. Adjacent buttons and menus
 2. Load JavaScript as shown below
-3. setAccordion(btn's selector,duration,timingfunction,only(true or false), first(true or false))
+3. setAccordion(btn's selector,｛openClass,duration,timingfunction,only(true or false), first(true or false)｝)
 4. only: Open only one
 5. first: Open first
 ```
 <body>
 
 
-<script src="assets/script/accordion.js"></script>
+<script src="accordion.js"></script>
 <script>
-    setAccordion({
-        $btn: '.faq__question',
-        duration: '1.0s',
-        timing: 'ease-in-out',
+    const accordion = new SetAccordion('.faq__question',{
         only: true,
         first: true,
     });
