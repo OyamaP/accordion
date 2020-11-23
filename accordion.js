@@ -1,14 +1,13 @@
-/******************************
-* polyfill
-******************************/
+/**
+ * polyfill
+ * @link https://developer.mozilla.org/ja/docs/Web/API/Element/closest
+ */
 // matches
-// https://developer.mozilla.org/ja/docs/Web/API/Element/closest
 if (!Element.prototype.matches) {
     Element.prototype.matches = Element.prototype.msMatchesSelector || 
                                 Element.prototype.webkitMatchesSelector;
 }
 // closest  
-// https://developer.mozilla.org/ja/docs/Web/API/Element/closest
 if (!Element.prototype.closest) {
     Element.prototype.closest = function(s) {
         var el = this;
@@ -20,6 +19,7 @@ if (!Element.prototype.closest) {
         return null;
     };
 }
+
 
 
 /******************************
