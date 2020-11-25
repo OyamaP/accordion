@@ -46,7 +46,7 @@ function SetAccordion($btn,argObj){
     if(!$btn) return;
     config.$btn = $btn;
     for(let key in argObj){
-        if(!config.hasOwnProperty(key)) return;
+        if(!config.hasOwnProperty(key)) continue;
         config[key] = argObj[key];
     }
 
