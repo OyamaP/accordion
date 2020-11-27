@@ -50,7 +50,7 @@
 ## Browser
 Compatible with IE11 and modern browsers
 
-## PolyFill for IE11
+## Use PolyFill for IE11
 - forEach
 - matches
 - closest
