@@ -1,5 +1,6 @@
 /**
  * polyfill
+ * @link https://developer.mozilla.org/ja/docs/Web/API/Element/matches
  * @link https://developer.mozilla.org/ja/docs/Web/API/Element/closest
  */
 // matches
@@ -21,13 +22,12 @@ if (!Element.prototype.closest) {
 }
 
 
-
 /******************************
 * constructor / SetAccordion
 ******************************/
 
 // アコーディオンメニュー設定
-function SetAccordion($btn,argObj){
+function SetAccordion(argObj){
 
     /******************************
     * define
@@ -35,105 +35,132 @@ function SetAccordion($btn,argObj){
    // constructor
     const config = {
         $btn: '', // 開閉ボタンselector
-        firstTime: true, // 初回クリック判定
+        $menu: '', // 開閉メニューselector
+        $toggle: '', // openClassをtoggleする任意要素
         openClass: 'open', // open時のボタンに付与されるclass
         duration: '0.5s', // css transition-duration
         timing: 'ease', // css transition-timing-function
+        next: false, // $btn に隣接する次の要素をmenuとする
         only: false, // openするmenuを一つだけにする
         first: false, // 一番最初のmenuを開けておく
+        firstTime: true, // 初回クリック判定
     };
     // config -> 引数上書き
-    if(!$btn) return;
-    config.$btn = $btn;
     for(let key in argObj){
         if(!config.hasOwnProperty(key)) continue;
         config[key] = argObj[key];
     }
 
-    // アコーディオン開閉ボタン,アコーディオンメニュー
-    const $btns = document.querySelectorAll(config.$btn);
-    const $menus = [];
-    // [...Array].map 代用
-    for(let i=0; i<$btns.length; i++){
-        $menus.push($btns[i].nextElementSibling);
+    // アコーディオン開閉ボタン
+    const $btns = Array.from(document.querySelectorAll(config.$btn));
+
+    // アコーディオンメニュー
+    let $menus = [];
+    if(config.next){
+        // $btn の次要素を取得
+        // [...Array].map 代用
+        const length = $btns.length;
+        for(let i=0; i<length; i++){
+            $menus.push($btns[i].nextElementSibling);
+        }
     }
+    else if(config.$menu){
+        // 指定した$menuを全取得
+        $menus = Array.from(document.querySelectorAll(config.$menu));
+    }
+    else{return}
+
+    // toggle対象
+    let $toggles = [];
+    if(config.$toggle){
+        // 指定した$toggleを全取得
+        $toggles = Array.from(document.querySelectorAll(config.$toggle));
+    }
+    // 指定がない場合は$btnと同一とする
+    else{$toggles = $btns}
+
 
 
     /******************************
-    * functions
+    * functions / common
     ******************************/
 
+    // 共通化関数
+    // 単一変数と配列を同等に扱い処理するコールバック関数
+    const standardized = function(arg,fn){
+        if(Array.isArray(arg)){
+            const length = arg.length;
+            for(let i=0; i<length; i++){fn(arg[i])}
+        }
+        else{
+            fn(arg);
+        }
+    };
+
     // style設定(対象要素or配列,オブジェクト{propaty:value})
-    // forEach 代用
     const setStyle = function(arg,obj){
-        const set = function($ele){
+        standardized(arg,function($ele){
             for(let propaty in obj){
                 $ele.style[propaty] = obj[propaty];
             }
-        };
-        // 配列判定でループ処理
-        if(Array.isArray(arg)){
-            for(let i=0; i<arg.length; i++){set(arg[i])}
-        }
-        else{
-            set(arg);
-        }
-  
-    }
+        });
+    };
 
-    // addToggleMenu
-    // clickEvent 付与
-    const addToggleMenu = function(){
-        // forEach 代用 -> clickEvent 設定
-        for(let i=0; i<$btns.length; i++){
-            $btns[i].addEventListener('click',toggleMenu,false);
-        }
-    }
+    /******************************
+    * functions / accordion
+    ******************************/
 
-    // openMenu
     // メニューを開いた際のCSSやClass設定
     const openMenu = function($btn,$menu){
-        // メニュー内部の高さを取得し反映
-        const height = $menu.firstElementChild.offsetHeight;
-        $menu.style.height = height + 'px';
-        // openクラスを付与 -> trigger 判定
-        $btn.classList.add(config.openClass);
+        standardized($btn,function($ele){
+            // config.openClass 付与
+            $ele.classList.add(config.openClass);
+        });
+        standardized($menu,function($ele){
+            // config.openClass 付与
+            $ele.classList.add(config.openClass);
+            // メニュー内部の高さを取得し反映
+            const height = $ele.firstElementChild.offsetHeight;
+            $ele.style.height = height + 'px';
+        });
     };
 
-    // closeMenu
     // メニューを閉じた際のCSSやClass設定解除
     const closeMenu = function($btn,$menu){
-        $btn.classList.remove(config.openClass);
-        $menu.style.height = 0 + 'px';
+        standardized($btn,function($ele){
+            $ele.classList.remove(config.openClass);
+        });
+        standardized($menu,function($ele){
+            $ele.classList.remove(config.openClass);
+            $ele.style.height = 0 + 'px';
+        });
     };
 
-    // onlyMenu
+
     // 他のメニューを開いた際に今開いているメニューを閉じる
     const onlyMenu = function(){
         if(!config.only) return;
-        const $btn = document.querySelector(config.$btn + '.'+ config.openClass);
-        if(!$btn) return;
-        const $menu = $btn.nextElementSibling;
+        const $btn = Array.from(document.querySelectorAll(config.$btn + '.'+ config.openClass));
+        let $menu = [];
+        const length = $menus.length;
+        // array.map 代用
+        for(let i=0; i<length; i++){
+            if($menus[i].classList.contains(config.openClass)){
+                $menu.push($menus[i]);
+            }
+        }
+        if(!$btn.length || !$menu.length) return;
         closeMenu($btn,$menu);
     };
 
-    // firstMenu
     // 一つ目のメニューのみを予め開いておく設定
     const firstMenu = function(){
         if(!config.first) return;
-        const $btn = document.querySelector(config.$btn);
-        const $menu = $btn.nextElementSibling;
-        openMenu($btn,$menu);
+        openMenu($btns[0],$menus[0]);
     };
 
-
-    // メニュー開閉 ClickEvent
-    const toggleMenu = function(e){
-        // e.target補正
-        const $target = e.target.closest(config.$btn);
-        // クリックされた要素の次要素を取得
-        const $openEle = $target.nextElementSibling;
-        if(!$openEle) return;
+    // 初回動作設定
+    const firstClick = function(){
         if(config.firstTime){
             //アニメーション設定
             setStyle($menus,{
@@ -142,18 +169,48 @@ function SetAccordion($btn,argObj){
             });
             config.firstTime = false; // define 初回のみ
         }
+    };
 
+
+    /******************************
+    * functions / clickEvent
+    ******************************/
+
+    // clickEvent 付与
+    const addClickEvent = function(){
+        for(let i=0; i<$btns.length; i++){
+            $btns[i].addEventListener('click',toggleMenu,false);
+        }
+    };
+
+    // メニュー開閉 ClickEvent
+    const toggleMenu = function(e){
+        // e.target補正
+        const $target = e.target.closest(config.$btn);
+        // targetの次要素を取得
+        const $openEle = $target.nextElementSibling;
+        // 初回動作設定
+        firstClick();
         // openクラスの有無を真偽値反転で取得
         const trigger = !$target.classList.contains(config.openClass);
-        // true -> open
-        if(trigger){
-            onlyMenu();
-            openMenu($target,$openEle);
+        const branch = function($btn,$menu){
+            // true -> open
+            if(trigger){
+                onlyMenu();
+                openMenu($btn,$menu);
+            }
+            // false -> close 
+            else {
+                closeMenu($btn,$menu);
+            }
+        };
+        if(config.next){
+            branch($target,$openEle);
         }
-        // false -> close 
-        else {
-            closeMenu($target,$openEle);
+        else{
+            branch($btns,$menus);
         }
+
     };
 
 
@@ -166,7 +223,7 @@ function SetAccordion($btn,argObj){
         height: 0 + 'px',
         overflowY: 'hidden',
     });
-    addToggleMenu();
+    addClickEvent();
     firstMenu();
 
 }

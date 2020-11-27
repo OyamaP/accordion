@@ -9,8 +9,9 @@
 </head>
 
 <body>
+
     <section class="section faq">
-        <h1 class="section__title" id="FAQ"><span>FAQ</span></h1>
+        <h2 class="section__title" id="FAQ"><span>FAQ</span></h2>
         <div class="section__content">
             <div class="faq__inner">
                 <ul class="faq__item">
@@ -49,11 +50,50 @@
             </div>
         </div>
     </section>
+
+    <section class="section newsbox">
+        <h2 class="section__title" id="newsbox"><span>NEWS</span></h2>
+        <div class="section__content">
+            <div class="newsbox__inner">
+                <h3 class="section__subtitle news__btn">Important Notices</h3>
+                <div class="newsbox__maintext">
+                    <p>
+                        abcdefghijklmnopqrstuvwxyz<br>
+                        abcdefghijklmnopqrstuvwxyz<br>
+                        abcdefghijklmnopqrstuvwxyz<br>
+                        abcdefghijklmnopqrstuvwxyz<br>
+                        abcdefghijklmnopqrstuvwxyz    
+                    </p>
+                </div>
+                <div class="newsbox__detailtext">
+                    <p>
+                        01234567890123456789<br>
+                        01234567890123456789<br>
+                        01234567890123456789<br>
+                        01234567890123456789<br>
+                        01234567890123456789
+                    </p>
+                </div>
+                <div class="newsbox__details news__btn">Click here for details</div>
+            </div>
+        </div>
+    </section>
+
+
+
     <script src="accordion.js"></script>
     <script>
-        const accordion = new SetAccordion('.faq__question',{
+        const faq = new SetAccordion({
+            $btn: '.faq__question',
+            next: true,
             only: true,
             first: true,
+        });
+        const news = new SetAccordion({
+            $btn: '.news__btn',
+            $menu: '.newsbox__detailtext',
+            duration: '0.75s',
+            timing: 'ease-in-out',
         });
     </script>
 </body>

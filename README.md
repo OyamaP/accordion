@@ -15,19 +15,34 @@
 
 1. Adjacent buttons and menus
 2. Load JavaScript as shown below
-3. setAccordion(btn's selector,｛openClass,duration,timingfunction,only(true or false), first(true or false)｝)
-4. only: Open only one
-5. first: Open first
+- $btn -> clickBtn
+- $menu -> openMenu(outer)
+- $toggle -> Any element to toggle
+- openClass -> Any class to use
+- duration -> css transition-duration
+- timing -> css transition-timing-function
+- next -> Make the next element of the button a menu<br>
+　※$menu is disabled
+- only -> Open only one
+- first -> Open first
 ```
 <body>
 
 
 <script src="accordion.js"></script>
 <script>
-    const accordion = new SetAccordion('.faq__question',{
-        only: true,
-        first: true,
-    });
+        const faq = new SetAccordion({
+            $btn: '.faq__question',
+            next: true,
+            only: true,
+            first: true,
+        });
+        const news = new SetAccordion({
+            $btn: '.news__btn',
+            $menu: '.newsbox__detailtext',
+            duration: '0.75s',
+            timing: 'ease-in-out',
+        });
 </script>
 </body>
 ```
