@@ -1,14 +1,29 @@
 /**
- * polyfill
- * @link https://developer.mozilla.org/ja/docs/Web/API/Element/matches
- * @link https://developer.mozilla.org/ja/docs/Web/API/Element/closest
+ * polyfill / forEach
+ * @link https://developer.mozilla.org/en-US/docs/Web/API/NodeList/forEach
  */
-// matches
+if (window.NodeList && !NodeList.prototype.forEach) {
+    NodeList.prototype.forEach = function (callback, thisArg) {
+        thisArg = thisArg || window;
+        for (var i = 0; i < this.length; i++) {
+            callback.call(thisArg, this[i], i, this);
+        }
+    };
+}
+
+/**
+ * polyfill / matches
+ * @link https://developer.mozilla.org/ja/docs/Web/API/Element/matches
+ */
 if (!Element.prototype.matches) {
     Element.prototype.matches = Element.prototype.msMatchesSelector || 
                                 Element.prototype.webkitMatchesSelector;
 }
-// closest  
+
+/**
+ * polyfill / closest
+ * @link https://developer.mozilla.org/ja/docs/Web/API/Element/closest
+ */
 if (!Element.prototype.closest) {
     Element.prototype.closest = function(s) {
         var el = this;
@@ -20,6 +35,7 @@ if (!Element.prototype.closest) {
         return null;
     };
 }
+
 
 
 /******************************
@@ -52,7 +68,7 @@ function SetAccordion(argObj){
     }
 
     // アコーディオン開閉ボタン
-    const $btns = Array.from(document.querySelectorAll(config.$btn));
+    const $btns = [].slice.call(document.querySelectorAll(config.$btn));
 
     // アコーディオンメニュー
     let $menus = [];
@@ -66,7 +82,7 @@ function SetAccordion(argObj){
     }
     else if(config.$menu){
         // 指定した$menuを全取得
-        $menus = Array.from(document.querySelectorAll(config.$menu));
+        $menus = [].slice.call(document.querySelectorAll(config.$menu));
     }
     else{return}
 
@@ -74,7 +90,7 @@ function SetAccordion(argObj){
     let $toggles = [];
     if(config.$toggle){
         // 指定した$toggleを全取得
-        $toggles = Array.from(document.querySelectorAll(config.$toggle));
+        $toggles = [].slice.call(document.querySelectorAll(config.$toggle));
     }
     // 指定がない場合は$btnと同一とする
     else{$toggles = $btns}
@@ -87,6 +103,7 @@ function SetAccordion(argObj){
 
     // 共通化関数
     // 単一変数と配列を同等に扱い処理するコールバック関数
+    // NodeListを判定できないためquerySelectorAllを[].slice.call()
     const standardized = function(arg,fn){
         if(Array.isArray(arg)){
             const length = arg.length;
@@ -140,7 +157,7 @@ function SetAccordion(argObj){
     // 他のメニューを開いた際に今開いているメニューを閉じる
     const onlyMenu = function(){
         if(!config.only) return;
-        const $btn = Array.from(document.querySelectorAll(config.$btn + '.'+ config.openClass));
+        const $btn = [].slice.call(document.querySelectorAll(config.$btn + '.'+ config.openClass));
         let $menu = [];
         const length = $menus.length;
         // array.map 代用
