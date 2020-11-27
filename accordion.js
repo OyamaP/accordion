@@ -74,11 +74,10 @@ function SetAccordion(argObj){
     let $menus = [];
     if(config.next){
         // $btn の次要素を取得
-        // [...Array].map 代用
-        const length = $btns.length;
-        for(let i=0; i<length; i++){
-            $menus.push($btns[i].nextElementSibling);
-        }
+        // map 代用
+        $btns.forEach(function(btn){
+            $menus.push(btn.nextElementSibling);
+        });
     }
     else if(config.$menu){
         // 指定した$menuを全取得
@@ -103,11 +102,13 @@ function SetAccordion(argObj){
 
     // 共通化関数
     // 単一変数と配列を同等に扱い処理するコールバック関数
-    // NodeListを判定できないためquerySelectorAllを[].slice.call()
+    // NodeListを判定できないため予めquerySelectorAllを[].slice.call()し配列化する
+    // ※Array.fromをIE11で利用できないため
     const standardized = function(arg,fn){
         if(Array.isArray(arg)){
-            const length = arg.length;
-            for(let i=0; i<length; i++){fn(arg[i])}
+            arg.forEach(function(i){
+                fn(i);
+            });
         }
         else{
             fn(arg);
@@ -160,12 +161,12 @@ function SetAccordion(argObj){
         const $btn = [].slice.call(document.querySelectorAll(config.$btn + '.'+ config.openClass));
         let $menu = [];
         const length = $menus.length;
-        // array.map 代用
-        for(let i=0; i<length; i++){
-            if($menus[i].classList.contains(config.openClass)){
-                $menu.push($menus[i]);
+        // array.filter & map 代用
+        $menus.forEach(function(i){
+            if(i.classList.contains(config.openClass)){
+                $menu.push(i);
             }
-        }
+        });
         if(!$btn.length || !$menu.length) return;
         closeMenu($btn,$menu);
     };
@@ -195,9 +196,9 @@ function SetAccordion(argObj){
 
     // clickEvent 付与
     const addClickEvent = function(){
-        for(let i=0; i<$btns.length; i++){
-            $btns[i].addEventListener('click',toggleMenu,false);
-        }
+        $btns.forEach(function(i){
+            i.addEventListener('click',toggleMenu,false);
+        });
     };
 
     // メニュー開閉 ClickEvent
